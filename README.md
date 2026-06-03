@@ -1,20 +1,23 @@
 # Space Colony — CS1 Project
 
-**Team:** Laura Paez · Nicolás Acero · Erik Fernandez  
-**Variant:** Space Colony (No. 14)  
-**Course:** Computer Science I — Universidad Distrital Francisco José de Caldas  
+**Team:** Laura Paez · Nicolás Acero · Erik Fernandez
+**Variant:** Space Colony (No. 14)
+**Course:** Computer Science I — Universidad Distrital Francisco José de Caldas
 **Semester:** 2026-I
+
+Space Colony is a turn-based strategy game where a human player (green) competes
+against an AI opponent (red) to dominate an 8×8 grid planet. The AI uses **greedy**
+and **backtracking** algorithms. The C++ engine implements a **linked list** and an
+**AVL tree** from scratch. Python (Pygame) handles the UI and AI logic, communicating
+with the engine exclusively through JSON files.
 
 ---
 
-## Game Description
+## How the Game Looks
 
-Space Colony is a turn-based strategy game where a human player competes against
-an AI opponent to colonise and dominate an 8×8 grid planet.
 
-**Phase 1 — Expansion:** Both sides take turns colonising empty cells.  
-**Phase 2 — Combat:** Once the grid is full, sides attack adjacent enemy cells.  
-**Win condition:** Player with most resources (or most cells) when the game ends.
+![Space Colony gameplay screenshot](game/ui/assets/screenshot.png)
+
 
 ---
 
@@ -22,64 +25,75 @@ an AI opponent to colonise and dominate an 8×8 grid planet.
 
 ```
 project/
-├── engine/                  ← C++ core (compiled to ./engine/engine)
-│   ├── linked_list.h / .cpp ← Colony history (singly linked list)
-│   ├── tree.h / .cpp        ← Resource depot (AVL tree)
-│   ├── main.cpp             ← Engine entry point (reads input.json → writes state.json)
-│   ├── json.hpp             ← nlohmann/json single-header library
-│   └── Makefile
-│
+├── compile.bat              Windows build script (run once)
+├── README.md
+├── GUIDE.docx               Full game guide for the team
+├── engine/                  C++ core
+│   ├── json.hpp             nlohmann/json library (already included)
+│   ├── linked_list.h/.cpp   Colony history (singly linked list)
+│   ├── tree.h/.cpp          Resource depot (AVL tree)
+│   ├── main.cpp             Engine: reads input.json -> writes state.json
+│   └── Makefile             Build script for Linux/macOS
 ├── game/
 │   ├── algorithms/
-│   │   ├── greedy.py        ← Greedy expansion and attack algorithms
-│   │   └── backtracking.py  ← Backtracking expansion planner
+│   │   ├── greedy.py        Greedy expansion + attack
+│   │   └── backtracking.py  Backtracking expansion planner
 │   └── ui/
-│       ├── main.py          ← Pygame interface (ENTRY POINT)
-│       └── bridge.py        ← JSON file I/O bridge (Python ↔ C++)
-│
+│       ├── main.py          Pygame interface (ENTRY POINT)
+│       ├── bridge.py        JSON I/O bridge (Python <-> C++)
+│       └── assets/          Put your background image here (background.png)
 └── data/
-    ├── input.json           ← Python → C++ action
-    └── state.json           ← C++ → Python game state
+    ├── input.json           Python -> C++
+    └── state.json           C++ -> Python
 ```
 
 ---
 
 ## Requirements
 
-### C++ Engine
-- `g++` with C++17 support
-- `make`
-
-### Python UI
 - Python 3.10+
-- `pygame` library
+- pygame: `pip install pygame`
+- g++ (C++17 compiler)
 
-Install pygame:
-```bash
-pip install pygame
-```
+### Installing g++
+
+**Windows**
+1. Install MSYS2 from https://www.msys2.org
+2. In the MSYS2 UCRT64 terminal: `pacman -S mingw-w64-ucrt-x86_64-gcc`
+3. Add `C:\msys64\ucrt64\bin` to your Windows PATH
+4. Reopen the terminal and verify: `g++ --version`
+
+**Linux:** `sudo apt install g++`
+**macOS:** `xcode-select --install`
 
 ---
 
-## Setup & Execution
+## How to Run
 
-### 1. Compile the C++ engine (optional — auto-compiled on first run)
+### 1. Compile the C++ engine (once)
 
+**Windows** (from the project root):
+```
+.\compile.bat
+```
+
+**Linux / macOS**:
 ```bash
-cd engine
-make
-cd ..
+cd engine && make && cd ..
 ```
 
 ### 2. Run the game
 
 ```bash
-# From the project root directory:
-python game/ui/main.py
+# Windows
+py game\ui\main.py
+
+# Linux / macOS
+python3 game/ui/main.py
 ```
 
-The Python layer will automatically compile the C++ engine if the binary is
-not found.
+> The Python layer auto-recompiles the engine if the C++ source is newer than
+> the binary, so you never run a stale engine after editing the C++ code.
 
 ---
 
@@ -87,47 +101,40 @@ not found.
 
 | Action | Input |
 |---|---|
-| Colonise a cell (expansion) | Left-click the target cell |
-| Select attack origin (combat) | Left-click your own (green) cell |
-| Attack enemy cell (combat) | Left-click an adjacent red cell after selecting origin |
+| Colonise a cell (expansion) | Left-click an empty cell |
+| Select attack origin (combat) | Left-click your green cell |
+| Attack enemy cell (combat) | Left-click an adjacent red cell |
 | Pass turn | PASS button |
-| Reset game | RESET button or `R` key |
-| Help | HELP button or `H` key |
-| Close help | Click anywhere or `ESC` |
+| Reset game | RESET button or `R` |
+| Help | HELP button or `H` |
 
 ---
 
 ## Architecture
 
 ```
-Pygame UI  ──write──►  input.json  ──read──►  C++ Engine
-           ◄──read──   state.json  ◄──write──
+Pygame UI  --write-->  input.json  --read-->  C++ Engine
+           <--read--   state.json  <--write--
 ```
 
-Communication between the Python and C++ layers is **exclusively through
-JSON files** — no sockets, shared memory, or Python-C++ bindings.
+Communication between Python and C++ is **exclusively through JSON files** — no
+sockets, shared memory, or language bindings.
 
 ---
 
 ## Algorithms
 
-| Algorithm | Location | Phase | Complexity |
+| Algorithm | File | Phase | Complexity |
 |---|---|---|---|
-| Greedy Select Move | `greedy.py` | Expansion | O(n) |
-| Greedy Attack | `greedy.py` | Combat | O(n) |
-| Backtracking Expansion | `backtracking.py` | Expansion | O(4^d), d≤5 |
+| Greedy Select Move | greedy.py | Expansion | O(n) |
+| Greedy Attack | greedy.py | Combat | O(n) |
+| Backtracking | backtracking.py | Expansion (AI) | O(4^d), d≤5 |
 
-## Data Structures (C++)
+## Data Structures (C++, implemented from scratch)
 
 | Structure | File | Purpose | Insert | Search |
 |---|---|---|---|---|
-| Singly Linked List | `linked_list.cpp` | Colony history | O(1) | O(n) |
-| AVL Tree | `tree.cpp` | Resource depot, sorted by resources | O(log n) | O(log n) |
+| Singly Linked List | linked_list.cpp | Colony history | O(1) | O(n) |
+| AVL Tree | tree.cpp | Colonies sorted by resources | O(log n) | O(log n) |
 
 ---
-
-## Academic Integrity
-
-All code was written by the team members. The use of external libraries is
-limited to `nlohmann/json` (C++ JSON parsing) and `pygame` (Python UI),
-both of which are explicitly permitted by the course specification.
