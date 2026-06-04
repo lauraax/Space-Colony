@@ -1,7 +1,1 @@
-{
-  "action": "colonize",
-  "destination": {
-    "x": 6,
-    "y": 2
-  }
-}
+{"action": "reset"}

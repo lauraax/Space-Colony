@@ -26,6 +26,7 @@
 #include <ctime>      // time
 #include <cmath>      // abs
 #include <algorithm>  // std::max, std::min
+#include <chrono>     // high_resolution_clock
  
 using json = nlohmann::json;
  
@@ -382,11 +383,10 @@ static std::string action_attack(int orig_x, int orig_y,
  
         // Transfer the cell to the attacker.
         gs.owner_grid[dest_y][dest_x]    = owner_id;
-        gs.resource_grid[dest_y][dest_x] = atk_resources; // captured with attacker value
- 
-        // Update the attacker's position in the AVL tree.
-        tree.remove(atk_resources, orig_x, orig_y);          // update the AVL entry
-        tree.insert(atk_resources, energy_cost_of(atk_resources),
+        gs.resource_grid[dest_y][dest_x] = def_resources; // keep captured cell value
+
+        // Add the captured cell to the attacker's AVL entries.
+        tree.insert(def_resources, energy_cost_of(def_resources),
                     dest_x, dest_y, owner);
  
         // Add captured resources to the attacker.
@@ -394,7 +394,7 @@ static std::string action_attack(int orig_x, int orig_y,
         else                    gs.ai_total_resources     += def_resources;
  
         // Save the capture in history.
-        history.append(dest_x, dest_y, owner, atk_resources);
+        history.append(dest_x, dest_y, owner, def_resources);
  
     } else {
         result = "defender_wins";
@@ -420,6 +420,10 @@ static std::string determine_winner(const GameState& gs) {
 // Main game loop. Each run processes one action.
 // =============================================================================
 int main(int argc, char* argv[]) {
+    srand(static_cast<unsigned int>(
+        std::chrono::high_resolution_clock::now().time_since_epoch().count()
+    ));
+
     std::string data_dir = (argc > 1) ? std::string(argv[1]) : "../data";
     std::string input_path = data_dir + "/input.json";
     std::string state_path = data_dir + "/state.json";
