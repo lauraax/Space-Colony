@@ -1,3 +1,5 @@
+// Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+// Variant: Space Colony 
 
 // Description: Header for an AVL tree that stores the active colonies.
 //              Colonies are ordered by resources, with position as a tiebreaker.

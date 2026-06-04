@@ -1,3 +1,5 @@
+// Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+// Variant: Space Colony 
 
 // Description: Header for a singly linked list that stores the colonization
 //              history in insertion (chronological) order. Implemented from

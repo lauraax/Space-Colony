@@ -1,4 +1,7 @@
 # =============================================================================
+# Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+# Variant: Space Colony 
+
 # Description: Backtracking algorithm used by the AI to plan its expansion.
 #
 #   The algorithm explores all valid sequences of colonisation moves and

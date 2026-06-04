@@ -1,3 +1,5 @@
+// Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+// Variant: Space Colony 
 
 // Main file for the C++ game engine.
 // It reads input.json from Python, runs one game action,

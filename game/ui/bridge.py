@@ -1,4 +1,6 @@
 # =============================================================================
+# Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+# Variant: Space Colony 
 # Description: File I/O bridge between the Python layer and the C++ engine.
 #
 #   Python (Pygame UI + algorithms) communicates with the C++ engine

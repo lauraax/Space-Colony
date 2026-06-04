@@ -1,3 +1,5 @@
+// Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+// Variant: Space Colony 
 
 // Description: Singly linked list that stores colonization history.
 //              All operations use raw pointers (new / delete).

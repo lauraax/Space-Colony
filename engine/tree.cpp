@@ -1,3 +1,5 @@
+// Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+// Variant: Space Colony 
 
 // Description: AVL tree used to store colony resource data.
 //              The resource value is the main key.

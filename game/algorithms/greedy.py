@@ -1,4 +1,6 @@
 # =============================================================================
+# Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+# Variant: Space Colony 
 # Description: Greedy algorithms used by the AI opponent.
 #   - greedy_select_move : expansion phase  — pick the highest-resource empty
 #                          cell adjacent to the AI's existing colonies.

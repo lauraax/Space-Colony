@@ -1,4 +1,6 @@
 # =============================================================================
+# Team 14: Laura Paez, Nicolas Acero, Erik Fernandez
+# Variant: Space Colony 
 # Description: Pygame graphical interface for Space Colony.
 #   Entry point — run with:  py game/ui/main.py   (from project root)
 # =============================================================================
